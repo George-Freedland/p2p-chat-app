@@ -10,6 +10,7 @@ const App = () => {
   useEffect(() => {
     socket.on('chat message', (msg) => {
       setMessages((prevMessages) => [...prevMessages, msg]);
+      // setMessages([...messages, msg]);
     });
 
     return () => {
