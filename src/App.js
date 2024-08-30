@@ -44,6 +44,7 @@ const App = () => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder='Type a message...'
+          maxLength={200}
         />
         <button type='submit'>Send</button>
       </form>
