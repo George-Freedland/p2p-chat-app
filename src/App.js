@@ -7,17 +7,33 @@ const App = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState('');
-  const [color, setColor] = useState('White');
+  const [color, setColor] = useState('');
 
   useEffect(() => {
     socket.on('chat message', (msg) => {
-      setMessages((prevMessages) => [msg, ...prevMessages]);
+      setMessages((prevMessages) => {
+        return [{...msg, isNew: true}, ...prevMessages];
+      });
     });
 
     return () => {
       socket.off('chat message');
     };
   }, []);
+
+  useEffect(() => {
+    if (messages.length > 0 && messages[0].isNew) {
+      const timer = setTimeout(() => {
+        setMessages((prevMessages) => {
+          const newMessages = [...prevMessages];
+          newMessages[0].isNew = false;
+          return newMessages;
+        });
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [messages]);
 
   useEffect(() => {
     const nameSet1 = ['Boring', 'Amazing', 'Wicked', 'Speedy', 'Happy', 'Sad', 'Hopeful', 'Dreamy', 'Savage', 'Laughing', 'Trippy', 'Lost', 'Funny', 'Flawless'];
@@ -50,7 +66,12 @@ const App = () => {
       </form>
       <div className='chat-box'>
         {messages.map((msg, idx) => (
-          <div className='chat-message' key={idx}><div style={{ color: msg.color }}>{msg.username}</div>: {msg.message}</div>
+          <div 
+            className={`chat-message ${msg.isNew ? 'fade-in-scale' : ''}`} 
+            key={idx}
+          >
+            <div style={{ color: msg.color }}>{msg.username}</div>: {msg.message}
+          </div>
         ))}
       </div>
     </div>
