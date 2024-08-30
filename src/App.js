@@ -10,6 +10,15 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [color, setColor] = useState('');
   const [onlineUsers, setOnlineUsers] = useState(0);
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 1000); // Update every second
+
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, []);
 
   useEffect(() => {
     socket.on('chat message', (msg) => {
@@ -38,20 +47,20 @@ const App = () => {
       const timer = setTimeout(() => {
         setMessages((prevMessages) => {
           const newMessages = [...prevMessages];
-          // newMessages[0].isNew = false;
+          // newMessages[0].isNew = false; // Potential other solution
           newMessages.forEach(message => message.isNew = false)
           return newMessages;
         });
-      }, 150);
+      }, 150); // Length of fadeInScale css animation
 
       return () => clearTimeout(timer);
     }
   }, [messages]);
 
   useEffect(() => {
-    const nameSet1 = ['Boring', 'Amazing', 'Wicked', 'Speedy', 'Happy', 'Sad', 'Hopeful', 'Dreamy', 'Savage', 'Laughing', 'Trippy', 'Lost', 'Funny', 'Flawless', 'Perfect', 'Stable', 'Active', 'Rich'];
+    const nameSet1 = ['Boring', 'Amazing', 'Wicked', 'Speedy', 'Happy', 'Sad', 'Hopeful', 'Dreamy', 'Savage', 'Laughing', 'Trippy', 'Lost', 'Funny', 'Flawless', 'Perfect', 'Stable', 'Active', 'Rich', 'Healthy', 'Groovy', 'Chill'];
     const nameSet2 = ['Lime', 'Teal', 'Red', 'Orange', 'Yellow', 'Green', 'Aqua', 'Fuchsia', 'Violet', 'Grey', 'Black', 'White'];
-    const nameSet3 = ['Banana', 'Apple', 'Cherry', 'Laptop', 'Rabbit', 'Whale', 'Ocean', 'House', 'Robot', 'Phone', 'Gem', 'Marble', 'Speaker', 'Light', 'Bottle', 'Mouse', 'Rose', 'Flower', 'Corridor'];
+    const nameSet3 = ['Banana', 'Apple', 'Cherry', 'Laptop', 'Rabbit', 'Whale', 'Ocean', 'House', 'Robot', 'Phone', 'Gem', 'Marble', 'Speaker', 'Light', 'Bottle', 'Mouse', 'Rose', 'Flower', 'Corridor', 'Sun', 'Moon', 'Star', 'Car', 'Truck'];
     setUsername(nameSet1[Math.floor(Math.random() * nameSet1.length)] + nameSet2[Math.floor(Math.random() * nameSet2.length)] + nameSet3[Math.floor(Math.random() * nameSet3.length)])
     setColor(nameSet2[Math.floor(Math.random() * nameSet2.length)])
   }, []);
@@ -64,18 +73,18 @@ const App = () => {
     }
   };
 
-  const currentDateTime = new Date();
+  // const currentDateTime = new Date();
   const formattedDate = currentDateTime.toLocaleDateString();
   const formattedTime = currentDateTime.toLocaleTimeString();
 
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div>V0.0.7</div><div>Online Users: {onlineUsers}</div>
+        <div>V1.0.0</div><div style={{ fontSize: '0.9rem' }}>{formattedDate} {formattedTime}</div><div>Online Users: {onlineUsers}</div>
       </div>
       <div className='container'>
         <h1>World Chat</h1>
-        <h4>Hi<div style={{ color, marginLeft: '0.25rem' }}>{username}</div>! <div style={{ fontSize: '0.9rem', marginTop: '0.2rem', marginLeft: '0.2rem'}}>The local date/time is: {formattedDate} {formattedTime}</div></h4>
+        <h4>Hi<div style={{ color, marginLeft: '0.25rem' }}>{username}</div>!</h4>
         <form onSubmit={sendMessage}>
           <input 
             value={message}
