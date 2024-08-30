@@ -50,7 +50,7 @@ const App = () => {
 
   useEffect(() => {
     const nameSet1 = ['Boring', 'Amazing', 'Wicked', 'Speedy', 'Happy', 'Sad', 'Hopeful', 'Dreamy', 'Savage', 'Laughing', 'Trippy', 'Lost', 'Funny', 'Flawless', 'Perfect', 'Stable', 'Active', 'Rich'];
-    const nameSet2 = ['Lime', 'Teal', 'Maroon', 'Red', 'Orange', 'Yellow', 'Green', 'Aqua', 'Fuchsia', 'Violet', 'Grey', 'Black', 'White'];
+    const nameSet2 = ['Lime', 'Teal', 'Red', 'Orange', 'Yellow', 'Green', 'Aqua', 'Fuchsia', 'Violet', 'Grey', 'Black', 'White'];
     const nameSet3 = ['Banana', 'Apple', 'Cherry', 'Laptop', 'Rabbit', 'Whale', 'Ocean', 'House', 'Robot', 'Phone', 'Gem', 'Marble', 'Speaker', 'Light', 'Bottle', 'Mouse', 'Rose', 'Flower', 'Corridor'];
     setUsername(nameSet1[Math.floor(Math.random() * nameSet1.length)] + nameSet2[Math.floor(Math.random() * nameSet2.length)] + nameSet3[Math.floor(Math.random() * nameSet3.length)])
     setColor(nameSet2[Math.floor(Math.random() * nameSet2.length)])
@@ -59,10 +59,14 @@ const App = () => {
   const sendMessage = (e) => {
     e.preventDefault();
     if (message.trim()) {
-      socket.emit('chat message', { message, username, color });
+      socket.emit('chat message', { message, username, color, formattedDate, formattedTime });
       setMessage('');
     }
   };
+
+  const currentDateTime = new Date();
+  const formattedDate = currentDateTime.toLocaleDateString();
+  const formattedTime = currentDateTime.toLocaleTimeString();
 
   return (
     <>
@@ -71,13 +75,14 @@ const App = () => {
       </div>
       <div className='container'>
         <h1>World Chat</h1>
-        <h4>Hi<div style={{ color, marginLeft: '0.25rem' }}>{username}</div>!</h4>
+        <h4>Hi<div style={{ color, marginLeft: '0.25rem' }}>{username}</div>! <div style={{ fontSize: '0.9rem', marginTop: '0.2rem', marginLeft: '0.2rem'}}>The local date/time is: {formattedDate} {formattedTime}</div></h4>
         <form onSubmit={sendMessage}>
           <input 
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             placeholder='Type a message...'
             maxLength={200}
+            minLength={2}
           />
           <button type='submit'>Send</button>
         </form>
@@ -87,7 +92,7 @@ const App = () => {
               className={`chat-message ${msg.isNew ? 'fade-in-scale' : ''}`} 
               key={idx}
             >
-              <div style={{ color: msg.color }}>{msg.username}</div>: {msg.message}
+              <div style={{display: 'inline'}}><div style={{ display: 'flex' }}><b style={{ color: msg.color }}>{msg.username}</b>: {msg.message}</div><div style={{ fontSize: '0.8rem', color: 'lightgrey', fontStyle: 'italic' }}>{msg.formattedDate}{' '}{msg.formattedTime}</div></div>
             </div>
           ))}
         </div>
