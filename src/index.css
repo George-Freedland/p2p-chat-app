@@ -74,7 +74,7 @@ h4 {
 }
 
 .fade-in-scale {
-    animation: fadeInScale 0.5s ease-out;
+    animation: fadeInScale 0.15s ease-out;
 }
 
 input {

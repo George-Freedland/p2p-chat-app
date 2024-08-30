@@ -26,10 +26,11 @@ const App = () => {
       const timer = setTimeout(() => {
         setMessages((prevMessages) => {
           const newMessages = [...prevMessages];
-          newMessages[0].isNew = false;
+          // newMessages[0].isNew = false;
+          newMessages.forEach(message => message.isNew = false)
           return newMessages;
         });
-      }, 500);
+      }, 150);
 
       return () => clearTimeout(timer);
     }
